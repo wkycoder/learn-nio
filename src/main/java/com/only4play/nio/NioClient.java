@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class NioClient {
 
-    private SocketChannel socketChannel;
+    private final SocketChannel socketChannel;
 
     public NioClient(String ip, int port) {
         // 创建连接通道
@@ -35,15 +35,19 @@ public class NioClient {
     public void send(String msg) {
         try {
             socketChannel.write(ByteBuffer.wrap(msg.getBytes(StandardCharsets.UTF_8)));
-            // 读取服务端返回的数据
-            ByteBuffer allocate = ByteBuffer.allocate(1024);
-            int read = socketChannel.read(allocate);
-            System.out.println("服务端返回的消息：" +
-                    new String(allocate.array(), 0, read, StandardCharsets.UTF_8));
+//            // 读取服务端返回的数据
+//            ByteBuffer allocate = ByteBuffer.allocate(1024);
+//            int read = socketChannel.read(allocate);
+//            System.out.println("服务端返回的消息：" +
+//                    new String(allocate.array(), 0, read, StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("消息发送失败, 原因：" + e.getMessage());
         }
+    }
+
+    public void close() throws IOException {
+        socketChannel.close();
     }
 
 
