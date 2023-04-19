@@ -34,16 +34,23 @@ public class Handler implements Runnable {
                 e.printStackTrace();
             }
         }
-        if (selectionKey.isWritable()) {
-            // 写数据
-            write();
-        }
+//        if (selectionKey.isWritable()) {
+//            // 写数据
+//            write();
+//        }
     }
 
     private void read() throws IOException {
         ByteBuffer allocate = ByteBuffer.allocate(1024);
+        System.out.println("开始读取客户端消息");
         int read = socketChannel.read(allocate);
-        System.out.println("读取到客户端发送的数据：" + new String(allocate.array(), 0, read, StandardCharsets.UTF_8));
+        if (read != -1) {
+            System.out.println("读取到客户端发送的数据：" + new String(allocate.array(), 0, read, StandardCharsets.UTF_8));
+        } else {
+            // 为-1表示未读取到数据，可能是客户端主动关闭了连接
+            socketChannel.close();
+//            selectionKey.cancel();
+        }
         // 改为监听Write就绪事件，interestOps会清空原先监听的事件
 //        selectionKey.interestOps(SelectionKey.OP_WRITE);
     }
