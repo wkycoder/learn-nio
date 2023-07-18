@@ -31,7 +31,7 @@ public class Reactor implements Runnable {
             serverSocketChannel.configureBlocking(false);
             // 接收accept事件，附加对象（Acceptor），用于回调
             SelectionKey selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-            selectionKey.attach(new Acceptor(selector, serverSocketChannel, selectionKey));
+            selectionKey.attach(new Acceptor(selector, serverSocketChannel));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Reactor创建失败，原因：" + e.getMessage());
@@ -49,10 +49,10 @@ public class Reactor implements Runnable {
                 Iterator<SelectionKey> iterator = selectionKeys.iterator();
                 while (iterator.hasNext()) {
                     SelectionKey key = iterator.next();
-                    // 移除处理过的事件
-                    iterator.remove();
                     // 将接收到的事件进行分发
                     dispatch(key);
+                    // 移除处理过的事件
+                    iterator.remove();
                 }
             }
         } catch (IOException e) {

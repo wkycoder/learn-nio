@@ -1,5 +1,8 @@
 package com.only4play.nio.reactor;
 
+
+import com.only4play.nio.NioClient;
+
 import java.io.IOException;
 
 /**
@@ -12,6 +15,11 @@ public class Server {
         Reactor reactor = new Reactor(8091);
         Thread thread = new Thread(reactor);
         thread.start();
+
+        new Thread(() -> {
+            NioClient client = new NioClient("localhost", 8091);
+            client.send("one msg");
+        }).start();
     }
 
 }

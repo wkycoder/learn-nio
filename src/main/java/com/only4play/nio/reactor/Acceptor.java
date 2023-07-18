@@ -15,12 +15,9 @@ public class Acceptor implements Runnable {
 
     private final ServerSocketChannel serverSocketChannel;
 
-    private final SelectionKey selectionKey;
-
-    public Acceptor(Selector selector, ServerSocketChannel serverSocketChannel, SelectionKey selectionKey) {
+    public Acceptor(Selector selector, ServerSocketChannel serverSocketChannel) {
         this.selector = selector;
         this.serverSocketChannel = serverSocketChannel;
-        this.selectionKey = selectionKey;
     }
 
     @Override
@@ -30,7 +27,7 @@ public class Acceptor implements Runnable {
             SocketChannel socketChannel = serverSocketChannel.accept();
             if (socketChannel != null) {
                 socketChannel.configureBlocking(false);
-                // 注册读就绪时间，即去读取通道中准备就绪的数据 （默认的）
+                // 注册读就绪事件，即去读取通道中准备就绪的数据 （默认的）
                 SelectionKey selectionKey = socketChannel.register(selector, SelectionKey.OP_READ);
                 // 设置回调
                 selectionKey.attach(new Handler(socketChannel, selectionKey));
